@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Review R001 | AI Assistant</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">DESIGN REVIEW R001</div>
+        <div class="model-selector-container">
+            <span class="section-title" style="margin-bottom: 0;"><i data-lucide="cpu"></i> Model:</span>
+            <select id="model-select">
+                <option value="">Loading models...</option>
+            </select>
+            <div id="connection-status" class="pulse" style="width: 10px; height: 10px; border-radius: 50%; background: #ff4444;"></div>
+        </div>
+    </header>
+
+    <main>
+        <div class="review-panel">
+            <div class="content-card" id="review-target">
+                <div class="section-title"><i data-lucide="file-text"></i> Review Target</div>
+                <div class="verified-content" id="original-text">
+검증할 내용을 여기에 입력하거나 업로드하세요.
+Ollama가 이 내용을 분석하고 개선 제안을 드릴 것입니다.
+                </div>
+            </div>
+
+            <div class="content-card" id="verification-result">
+                <div class="section-title"><i data-lucide="shield-check"></i> AI Verification Result</div>
+                <div class="verified-content" id="ai-feedback">
+대화를 시작하면 Ollama의 검증 결과가 여기에 표시됩니다.
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <div class="section-title" style="padding: 20px 20px 0 20px;"><i data-lucide="messages-square"></i> AI Collaboration</div>
+            <div class="chat-messages" id="chat-box">
+                <div class="message ai">
+                    안녕하세요! Design Review R001 시스템입니다. 
+                    왼쪽 패널에 검증하고 싶은 내용을 입력하시고, 대화를 통해 함께 개선해 나가보세요.
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="user-input" placeholder="질문하거나 피드백을 입력하세요..." autocomplete="off">
+                <button id="send-btn">
+                    <i data-lucide="send"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="ollama-api.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Initialize icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
