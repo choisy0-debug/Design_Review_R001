@@ -43,11 +43,12 @@
                     <div id="ai-feedback" class="readonly">분석 결과가 여기에 표시됩니다.</div>
                 </div>
                 <div class="card res-card">
-                    <div class="card-title">RESOURCES</div>
-                    <div class="res-bars">
-                        <div class="res-item">GPU <div class="b"><div id="gpu-fill"></div></div></div>
-                        <div class="res-item">VRAM <div class="b"><div id="vram-fill"></div></div></div>
-                        <div class="res-item">RAM <div class="b"><div id="ram-fill"></div></div></div>
+                    <div class="card-title"><i data-lucide="monitor"></i> 시스템 리소스</div>
+                    <div class="res-list">
+                        <div class="res-row cpu">CPU: <span id="cpu-val">0.0%</span></div>
+                        <div class="res-row mem">MEM: <span id="mem-val">0.0% (0.0G)</span></div>
+                        <div class="res-row gpu">GPU: <span id="gpu-val">0.0%</span></div>
+                        <div class="res-row vram">VRAM: <span id="vram-val">0/0MB</span></div>
                     </div>
                 </div>
             </div>
