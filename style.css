@@ -72,6 +72,79 @@ header {
     letter-spacing: -1px;
 }
 
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.perf-selector-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--glass-bg);
+    padding: 6px 20px;
+    border-radius: 30px;
+    border: 1px solid var(--border);
+}
+
+.perf-steps {
+    display: flex;
+    gap: 4px;
+    background: rgba(0,0,0,0.3);
+    padding: 3px;
+    border-radius: 20px;
+}
+
+.perf-step {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.perf-step:hover {
+    color: var(--primary);
+    background: rgba(255,255,255,0.05);
+}
+
+.perf-step.active {
+    background: var(--primary);
+    color: var(--bg-dark);
+    box-shadow: 0 0 15px var(--primary-glow);
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.icon-btn:hover {
+    color: var(--primary);
+    background: rgba(255,255,255,0.05);
+}
+
+.perf-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    min-width: 60px;
+}
+
 .model-selector-container {
     display: flex;
     align-items: center;
@@ -119,6 +192,45 @@ main {
     backdrop-filter: blur(20px);
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     transition: transform 0.3s ease;
+}
+
+/* Resource Monitor */
+.resource-monitor {
+    margin-top: auto;
+}
+
+.resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.res-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.res-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-dim);
+}
+
+.res-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.res-bar div {
+    height: 100%;
+    background: var(--primary);
+    box-shadow: 0 0 10px var(--primary-glow);
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .content-card:hover {

@@ -11,13 +11,27 @@
 <body>
     <header>
         <div class="logo">DESIGN REVIEW R001</div>
-        <div class="model-selector-container">
-            <span class="section-title" style="margin-bottom: 0;"><i data-lucide="cpu"></i> Model:</span>
-            <select id="model-select">
-                <option value="">Loading models...</option>
-            </select>
-            <div id="connection-status" class="pulse" style="width: 10px; height: 10px; border-radius: 50%; background: #ff4444;"></div>
-        </div>
+            <div class="perf-selector-container">
+                <span class="section-title" style="margin-bottom: 0;"><i data-lucide="zap"></i> Performance:</span>
+                <div class="perf-steps" id="perf-steps">
+                    <button class="perf-step" data-level="1">1</button>
+                    <button class="perf-step" data-level="2">2</button>
+                    <button class="perf-step active" data-level="3">3</button>
+                    <button class="perf-step" data-level="4">4</button>
+                    <button class="perf-step" data-level="5">5</button>
+                </div>
+                <span id="perf-label" class="perf-label">Power (L3)</span>
+            </div>
+            <div class="model-selector-container">
+                <span class="section-title" style="margin-bottom: 0;"><i data-lucide="cpu"></i> Model:</span>
+                <select id="model-select">
+                    <option value="">Checking Ollama...</option>
+                </select>
+                <button id="retry-models" class="icon-btn" title="Retry Connection">
+                    <i data-lucide="refresh-cw"></i>
+                </button>
+                <div id="connection-status" class="pulse" style="width: 10px; height: 10px; border-radius: 50%; background: #ff4444;"></div>
+            </div>
     </header>
 
     <main>
@@ -34,6 +48,33 @@ Ollama가 이 내용을 분석하고 개선 제안을 드릴 것입니다.
                 <div class="section-title"><i data-lucide="shield-check"></i> AI Verification Result</div>
                 <div class="verified-content" id="ai-feedback">
 대화를 시작하면 Ollama의 검증 결과가 여기에 표시됩니다.
+                </div>
+            </div>
+
+            <!-- Resource Monitor Panel -->
+            <div class="content-card resource-monitor">
+                <div class="section-title"><i data-lucide="activity"></i> System Resource Allocation (Priority: GPU > VRAM > RAM)</div>
+                <div class="resource-grid">
+                    <div class="res-item">
+                        <div class="res-info"><span>GPU</span><span id="gpu-val">0%</span></div>
+                        <div class="res-bar"><div id="gpu-bar" style="width: 0%;"></div></div>
+                    </div>
+                    <div class="res-item">
+                        <div class="res-info"><span>VRAM</span><span id="vram-val">0GB</span></div>
+                        <div class="res-bar"><div id="vram-bar" style="width: 0%; background: var(--secondary);"></div></div>
+                    </div>
+                    <div class="res-item">
+                        <div class="res-info"><span>Memory</span><span id="mem-val">0GB</span></div>
+                        <div class="res-bar"><div id="mem-bar" style="width: 0%;"></div></div>
+                    </div>
+                    <div class="res-item">
+                        <div class="res-info"><span>CPU</span><span id="cpu-val">0%</span></div>
+                        <div class="res-bar"><div id="cpu-bar" style="width: 0%;"></div></div>
+                    </div>
+                    <div class="res-item">
+                        <div class="res-info"><span>NPU</span><span id="npu-val">0%</span></div>
+                        <div class="res-bar"><div id="npu-bar" style="width: 0%; background: var(--accent);"></div></div>
+                    </div>
                 </div>
             </div>
         </div>
