@@ -3,29 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DESIGN REVIEW R001 | ULTIMATE BAR</title>
-    <link rel="stylesheet" href="style.css?v=final">
+    <title>DESIGN REVIEW R001</title>
+    <link rel="stylesheet" href="style.css?v=r2">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body data-perf="3">
     <div id="app">
-        <!-- THE ULTIMATE PERFORMANCE SLIDER BAR -->
+        <!-- HEADER: Logo + Model Only -->
         <header>
             <div class="logo">DESIGN REVIEW <span>R001</span></div>
-            
-            <div class="perf-bar-box">
-                <div class="perf-header">
-                    <span class="label"><i data-lucide="zap"></i> SYSTEM PERFORMANCE BAR</span>
-                    <span id="perf-val-text" class="status-val">POWER HIGH (L3)</span>
-                </div>
-                <div class="slider-wrapper">
-                    <input type="range" id="perf-slider" min="1" max="5" value="3" step="1">
-                    <div class="slider-ticks">
-                        <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-                    </div>
-                </div>
-            </div>
-
             <div class="header-right">
                 <select id="model-select"><option>Loading Ollama...</option></select>
                 <div id="conn-indicator" class="status-dot"></div>
@@ -34,24 +20,51 @@
 
         <main>
             <div class="pane-left">
+                <!-- Review Target -->
                 <div class="card">
                     <div class="card-title">REVIEW TARGET</div>
                     <div id="original-text" contenteditable="true" class="editable">여기에 검증할 내용을 입력하세요...</div>
                 </div>
+
+                <!-- AI Feedback -->
                 <div class="card">
                     <div class="card-title">AI FEEDBACK</div>
                     <div id="ai-feedback" class="readonly">분석 결과가 여기에 표시됩니다.</div>
                 </div>
-                <div class="card res-card">
-                    <div class="card-title"><i data-lucide="monitor"></i> 시스템 리소스</div>
-                    <div class="res-list">
-                        <div class="res-row cpu">CPU: <span id="cpu-val">0.0%</span></div>
-                        <div class="res-row mem">MEM: <span id="mem-val">0.0% (0.0G)</span></div>
-                        <div class="res-row gpu">GPU: <span id="gpu-val">0.0%</span></div>
-                        <div class="res-row vram">VRAM: <span id="vram-val">0/0MB</span></div>
+
+                <!-- COMBINED: Performance Bar + Resource Monitor -->
+                <div class="card compact-card">
+                    <!-- Performance Bar (위) -->
+                    <div class="perf-section">
+                        <div class="perf-header">
+                            <span><i data-lucide="zap"></i> SYSTEM PERFORMANCE BAR</span>
+                            <span id="perf-val-text" class="status-val">POWER HIGH (L3)</span>
+                        </div>
+                        <div class="slider-wrapper">
+                            <input type="range" id="perf-slider" min="1" max="5" value="3" step="1">
+                            <div class="slider-ticks">
+                                <span>ECO</span><span>2</span><span>PWR</span><span>4</span><span>MAX</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="divider"></div>
+
+                    <!-- Resource Monitor (아래) -->
+                    <div class="res-section">
+                        <div class="card-title"><i data-lucide="monitor"></i> 시스템 리소스</div>
+                        <div class="res-list">
+                            <div class="res-row cpu">CPU: <span id="cpu-val">0.0%</span></div>
+                            <div class="res-row mem">MEM: <span id="mem-val">0.0% (0.0G)</span></div>
+                            <div class="res-row gpu">GPU: <span id="gpu-val">0.0%</span></div>
+                            <div class="res-row vram">VRAM: <span id="vram-val">0/0MB</span></div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Chat Panel -->
             <div class="pane-right">
                 <div id="chat-box" class="chat-area"></div>
                 <div class="chat-input">
@@ -69,13 +82,13 @@
                 <span><i data-lucide="alert-circle"></i> OLLAMA OFFLINE</span>
                 <button id="close-error" class="close-btn">&times;</button>
             </div>
-            <p>Ollama 서버에 연결할 수 없습니다. AI 기능을 사용하려면 CORS 설정이 필요합니다.</p>
+            <p>Ollama 서버에 연결할 수 없습니다. CORS 설정 후 Ollama를 재시작하세요.</p>
             <button id="fix-btn" class="mini-fix-btn">CORS 명령어 복사</button>
         </div>
     </div>
 
-    <script src="ollama-api.js?v=final"></script>
-    <script src="app.js?v=final"></script>
+    <script src="ollama-api.js?v=r2"></script>
+    <script src="app.js?v=r2"></script>
     <script>lucide.createIcons();</script>
 </body>
 </html>
