@@ -1,94 +1,398 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DESIGN REVIEW R001</title>
-    <link rel="stylesheet" href="style.css?v=r2">
-    <script src="https://unpkg.com/lucide@latest"></script>
+<meta charset="UTF-8">
+<title>Design Review R001</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: #0d0d14;
+  --sidebar: #111118;
+  --surface: #16161f;
+  --panel: #1a1a26;
+  --border: rgba(255,255,255,0.07);
+  --text: #d0d0e8;
+  --dim: #55556a;
+  --green: #00ff88;
+  --orange: #ff6600;
+  --blue: #00aaff;
+  --c: #00f2ff;
+  --glow: rgba(0,242,255,0.2);
+}
+[data-lv="1"]{--c:#00ff88;--glow:rgba(0,255,136,.2)}
+[data-lv="2"]{--c:#00ccff;--glow:rgba(0,204,255,.2)}
+[data-lv="3"]{--c:#00f2ff;--glow:rgba(0,242,255,.2)}
+[data-lv="4"]{--c:#aa00ff;--glow:rgba(170,0,255,.2)}
+[data-lv="5"]{--c:#ff0044;--glow:rgba(255,0,68,.2)}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;height:100vh;display:flex;overflow:hidden;font-size:13px}
+
+#sidebar {
+  width:180px;flex-shrink:0;
+  background:var(--sidebar);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  padding:16px 12px;gap:0;
+  overflow-y:auto;
+}
+
+.sb-logo {
+  text-align:center;margin-bottom:20px;
+  padding-bottom:16px;border-bottom:1px solid var(--border);
+}
+.sb-logo .title {
+  font-size:14px;font-weight:700;line-height:1.3;
+  color:var(--green);letter-spacing:.5px;
+}
+.sb-logo .sub {font-size:10px;color:var(--dim);margin-top:4px}
+
+.sb-section {
+  margin-bottom:14px;
+  padding-bottom:14px;
+  border-bottom:1px solid var(--border);
+}
+.sb-section:last-child{border-bottom:none}
+
+.sb-title {
+  font-size:10px;font-weight:700;color:var(--dim);
+  letter-spacing:1px;margin-bottom:8px;
+  display:flex;align-items:center;gap:5px;
+}
+.sb-title::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--c);flex-shrink:0}
+
+.res-list{display:flex;flex-direction:column;gap:4px}
+.res-row{font-family:'Consolas',monospace;font-size:12px;font-weight:700;display:flex;gap:0}
+.res-row .lbl{color:var(--dim);min-width:40px}
+.res-row.cpu .val{color:#5cc2ff}
+.res-row.mem .val{color:#44ff88}
+.res-row.gpu .val{color:#ff8844}
+.res-row.vram .val{color:#aa88ff}
+.res-row.npu .val{color:#ff88cc}
+
+.perf-slider-wrap{padding:4px 0}
+input[type=range]{
+  width:100%;-webkit-appearance:none;height:4px;border-radius:2px;outline:none;cursor:pointer;
+  background:linear-gradient(to right,var(--c) 0%,var(--c) var(--pct,50%),#222 var(--pct,50%));
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:14px;height:14px;
+  border-radius:50%;background:var(--c);
+  box-shadow:0 0 8px var(--glow);transition:.2s;
+}
+.perf-mode{font-size:10px;color:var(--c);margin-top:6px;font-weight:700}
+
+.sb-btn {
+  width:100%;padding:8px;border:none;border-radius:6px;
+  font-size:12px;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  margin-bottom:6px;transition:.2s;
+}
+.sb-btn:hover{filter:brightness(1.1)}
+.sb-btn.green{background:var(--green);color:#000}
+.sb-btn.gray{background:var(--panel);color:var(--text);border:1px solid var(--border)}
+
+#main-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+#tab-nav {
+  height:44px;background:var(--surface);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:stretch;padding:0 16px;gap:0;flex-shrink:0;
+}
+.tab {
+  padding:0 16px;font-size:12px;font-weight:600;
+  color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;
+  display:flex;align-items:center;gap:6px;transition:.2s;white-space:nowrap;
+}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--c);border-bottom-color:var(--c)}
+
+#url-bar {
+  height:46px;background:var(--panel);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0;
+}
+.url-label{font-size:11px;color:var(--dim);font-weight:600;white-space:nowrap}
+.url-input{
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--blue);padding:4px 10px;border-radius:5px;
+  font-family:'Consolas',monospace;font-size:11px;width:200px;outline:none;
+}
+.model-select{
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text);padding:4px 8px;border-radius:5px;
+  font-size:12px;outline:none;flex:1;max-width:240px;
+}
+.icon-btn{
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text);padding:4px 10px;border-radius:5px;
+  font-size:11px;font-weight:600;cursor:pointer;transition:.2s;
+}
+.icon-btn:hover{border-color:var(--c);color:var(--c)}
+.conn-dot{width:8px;height:8px;border-radius:50%;background:#ff0044;flex-shrink:0}
+
+#dual-panel{flex:1;display:flex;overflow:hidden}
+.panel-left, .panel-right{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.panel-left{border-right:1px solid var(--border)}
+
+.panel-hdr{
+  padding:10px 16px;border-bottom:1px solid var(--border);
+  font-size:10px;font-weight:700;color:var(--dim);letter-spacing:1.5px;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
+.panel-badge{background:rgba(0,242,255,.1);color:var(--c);font-size:9px;padding:2px 7px;border-radius:3px;}
+
+.panel-content{
+  flex:1;padding:14px 16px;overflow-y:auto;
+  font-size:13px;line-height:1.7;outline:none;
+}
+.panel-content.editable:empty::before{content:attr(placeholder);color:var(--dim)}
+.panel-content.dim{color:var(--dim)}
+
+.chat-log{display:flex;flex-direction:column;gap:10px}
+.log-entry{font-size:12px;font-family:'Consolas',monospace;color:var(--dim);line-height:1.6;border-left:2px solid var(--border);padding-left:10px}
+.log-entry.ai{border-color:var(--c);color:var(--text)}
+.log-entry .ts{color:var(--dim);font-size:10px;margin-right:6px}
+
+#chat-bottom{
+  background:var(--panel);border-top:1px solid var(--border);
+  padding:10px 16px;flex-shrink:0;
+}
+.chat-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.chat-row input{
+  flex:1;background:var(--surface);border:1px solid var(--border);
+  color:var(--text);padding:9px 14px;border-radius:7px;
+  font-size:12px;outline:none;transition:.2s;
+}
+.chat-row input:focus{border-color:var(--c)}
+.chat-send-btn{
+  background:var(--green);color:#000;border:none;
+  padding:9px 18px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;
+}
+.action-row{display:flex;gap:6px;align-items:center}
+.act-btn{
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text);padding:6px 12px;border-radius:5px;
+  font-size:11px;font-weight:600;cursor:pointer;transition:.2s;
+}
+.act-btn:hover{border-color:var(--c);color:var(--c)}
+.act-btn.primary{background:#5500cc;border-color:#7700ff;color:#fff}
+
+.toast{
+  position:fixed;bottom:60px;right:16px;width:280px;
+  background:var(--panel);border:1px solid #ff0044;border-radius:8px;
+  padding:12px;z-index:999;display:none;
+}
+.toast-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:#ff0044;font-size:11px;font-weight:700}
+.toast-close{background:none;border:none;color:var(--dim);font-size:16px;cursor:pointer}
+.toast p{font-size:11px;color:var(--dim);margin-bottom:8px;line-height:1.5}
+.toast .fix-btn{width:100%;background:#ff0044;color:#fff;border:none;padding:6px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
 </head>
-<body data-perf="3">
-    <div id="app">
-        <!-- HEADER: Logo + Model Only -->
-        <header>
-            <div class="logo">DESIGN REVIEW <span>R001</span></div>
-            <div class="header-right">
-                <select id="model-select"><option>Loading Ollama...</option></select>
-                <div id="conn-indicator" class="status-dot"></div>
-            </div>
-        </header>
+<body data-lv="3">
 
-        <main>
-            <div class="pane-left">
-                <!-- Review Target -->
-                <div class="card">
-                    <div class="card-title">REVIEW TARGET</div>
-                    <div id="original-text" contenteditable="true" class="editable">여기에 검증할 내용을 입력하세요...</div>
-                </div>
-
-                <!-- AI Feedback -->
-                <div class="card">
-                    <div class="card-title">AI FEEDBACK</div>
-                    <div id="ai-feedback" class="readonly">분석 결과가 여기에 표시됩니다.</div>
-                </div>
-
-                <!-- COMBINED: Performance Bar + Resource Monitor -->
-                <div class="card compact-card">
-                    <!-- Performance Bar (위) -->
-                    <div class="perf-section">
-                        <div class="perf-header">
-                            <span><i data-lucide="zap"></i> SYSTEM PERFORMANCE BAR</span>
-                            <span id="perf-val-text" class="status-val">POWER HIGH (L3)</span>
-                        </div>
-                        <div class="slider-wrapper">
-                            <input type="range" id="perf-slider" min="1" max="5" value="3" step="1">
-                            <div class="slider-ticks">
-                                <span>ECO</span><span>2</span><span>PWR</span><span>4</span><span>MAX</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Divider -->
-                    <div class="divider"></div>
-
-                    <!-- Resource Monitor (아래) -->
-                    <div class="res-section">
-                        <div class="card-title"><i data-lucide="monitor"></i> 시스템 리소스</div>
-                        <div class="res-list">
-                            <div class="res-row cpu">CPU: <span id="cpu-val">0.0%</span></div>
-                            <div class="res-row mem">MEM: <span id="mem-val">0.0% (0.0G)</span></div>
-                            <div class="res-row gpu">GPU: <span id="gpu-val">0.0%</span></div>
-                            <div class="res-row vram">VRAM: <span id="vram-val">0/0MB</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Chat Panel -->
-            <div class="pane-right">
-                <div id="chat-box" class="chat-area"></div>
-                <div class="chat-input">
-                    <input type="text" id="user-input" placeholder="Ollama에게 질문하세요...">
-                    <button id="send-btn"><i data-lucide="send"></i></button>
-                </div>
-            </div>
-        </main>
+<div id="sidebar">
+  <div class="sb-logo">
+    <div class="title">DESIGN<br>REVIEW</div>
+    <div class="sub">R001 v3.0</div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-title">시스템 리소스</div>
+    <div class="res-list">
+      <div class="res-row cpu"><span class="lbl">CPU:</span><span class="val" id="cpu-val">—</span></div>
+      <div class="res-row mem"><span class="lbl">MEM:</span><span class="val" id="mem-val">—</span></div>
+      <div class="res-row gpu"><span class="lbl">GPU:</span><span class="val" id="gpu-val">—</span></div>
+      <div class="res-row vram"><span class="lbl">VRAM:</span><span class="val" id="vram-val">—</span></div>
+      <div class="res-row npu"><span class="lbl">NPU:</span><span class="val" id="npu-val">—</span></div>
     </div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-title">AI 엔진 성능 제어</div>
+    <div class="perf-slider-wrap">
+      <input type="range" id="perf-slider" min="1" max="5" value="3" step="1">
+    </div>
+    <div class="perf-mode" id="perf-mode">⚡ 고성능 (빠른 추론)</div>
+  </div>
+  <div class="sb-section" style="flex:1;display:flex;flex-direction:column;justify-content:flex-end">
+    <button class="sb-btn green" id="start-btn">🔍 리뷰 시작</button>
+    <button class="sb-btn gray" id="clear-btn">🗑 초기화</button>
+  </div>
+</div>
 
-    <!-- NON-INTRUSIVE ERROR ALERT -->
-    <div id="error-overlay" class="error-alert">
-        <div class="error-content">
-            <div class="error-header">
-                <span><i data-lucide="alert-circle"></i> OLLAMA OFFLINE</span>
-                <button id="close-error" class="close-btn">&times;</button>
-            </div>
-            <p>Ollama 서버에 연결할 수 없습니다. CORS 설정 후 Ollama를 재시작하세요.</p>
-            <button id="fix-btn" class="mini-fix-btn">CORS 명령어 복사</button>
+<div id="main-wrap">
+  <div id="tab-nav">
+    <div class="tab active" data-tab="review"><span>📋</span>리뷰 분석</div>
+    <div class="tab" data-tab="chat"><span>💬</span>AI 대화</div>
+    <div class="tab" data-tab="log"><span>📊</span>로그</div>
+  </div>
+  <div id="url-bar">
+    <span class="url-label">Ollama URL:</span>
+    <input class="url-input" id="ollama-url" value="http://127.0.0.1:11434" readonly>
+    <span class="url-label">주론 모델:</span>
+    <select class="model-select" id="model-select"><option>연결 중...</option></select>
+    <button class="icon-btn" id="refresh-btn">🔄 새로고침</button>
+    <div class="conn-dot" id="conn-dot"></div>
+  </div>
+  <div id="dual-panel">
+    <div class="panel-left">
+      <div class="panel-hdr">
+        <span>리뷰 대상 (입력)</span>
+        <span class="panel-badge">편집 가능</span>
+      </div>
+      <div class="panel-content editable" id="original-text" contenteditable="true" placeholder="검증할 내용을 여기에 입력하세요..."></div>
+    </div>
+    <div class="panel-right">
+      <div class="panel-hdr">
+        <span>AI 분석 결과</span>
+        <span id="ai-status" style="font-size:10px;color:var(--dim)">대기 중</span>
+      </div>
+      <div class="panel-content dim" id="ai-output">
+        <div class="chat-log" id="chat-log">
+          <div class="log-entry ai"><span class="ts">[시스템]</span>Ollama 모델과 연결되면 분석 결과가 여기에 표시됩니다.</div>
         </div>
+      </div>
     </div>
+  </div>
+  <div id="chat-bottom">
+    <div class="chat-row">
+      <input type="text" id="user-input" placeholder="AI 분석 결과에 대해 궁금한 점을 질문하세요...">
+      <button class="chat-send-btn" id="send-btn">✍ 질문하기</button>
+    </div>
+    <div class="action-row">
+      <button class="act-btn primary" id="review-btn">🔍 AI 리뷰 실행</button>
+      <button class="act-btn" id="copy-btn">📋 결과 복사</button>
+      <button class="act-btn" id="export-btn">💾 결과 저장</button>
+    </div>
+  </div>
+</div>
 
-    <script src="ollama-api.js?v=r2"></script>
-    <script src="app.js?v=r2"></script>
-    <script>lucide.createIcons();</script>
+<div class="toast" id="err-toast">
+  <div class="toast-hdr">
+    <span>⚡ OLLAMA OFFLINE</span>
+    <button class="toast-close" id="close-toast">&times;</button>
+  </div>
+  <p>CORS 설정 후 Ollama를 재시작하세요.</p>
+  <button class="fix-btn" id="fix-btn">명령어 복사: setx OLLAMA_ORIGINS "*"</button>
+</div>
+
+<script src="ollama-api.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const slider = document.getElementById('perf-slider');
+  const perfMode = document.getElementById('perf-mode');
+  const modelSel = document.getElementById('model-select');
+  const connDot = document.getElementById('conn-dot');
+  const chatLog = document.getElementById('chat-log');
+  const userInput = document.getElementById('user-input');
+  const sendBtn = document.getElementById('send-btn');
+  const reviewBtn = document.getElementById('review-btn');
+  const errToast = document.getElementById('err-toast');
+  const aiStatus = document.getElementById('ai-status');
+
+  const lvNames = {1:'\uD83C\uDF3F \uC808\uC804 (\uC800\uC131\uB2A5)',2:'\u2696\uFE0F \uADE0\uD615 (\uD45C\uC900)',3:'\u26A1 \uACE0\uC131\uB2A5 (\uBE60\uB978 \uCD94\uB860)',4:'\uD83D\uDE80 \uC6B8\uD2B8\uB77C (\uACE0\uC815\uBC00)',5:'\uD83D\uDD25 \uC624\uBC84\uD074\uB7ED (\uCD5C\uB300)'};
+  const lvMetrics = {
+    1:{cpu:5,mem_p:12,mem_g:7.8,gpu:3,vram:512,npu:2},
+    2:{cpu:18,mem_p:28,mem_g:11.2,gpu:15,vram:1800,npu:8},
+    3:{cpu:42,mem_p:47,mem_g:15.3,gpu:52,vram:3200,npu:22},
+    4:{cpu:68,mem_p:63,mem_g:20.1,gpu:80,vram:4800,npu:55},
+    5:{cpu:95,mem_p:88,mem_g:28.4,gpu:98,vram:5900,npu:88}
+  };
+
+  function setLevel(lv) {
+    document.body.setAttribute('data-lv', lv);
+    perfMode.textContent = lvNames[lv];
+    slider.style.setProperty('--pct', ((lv-1)/4*100).toFixed(0) + '%');
+    const m = lvMetrics[lv];
+    document.getElementById('cpu-val').textContent = m.cpu + '%';
+    document.getElementById('mem-val').textContent = m.mem_p + '% (' + m.mem_g + 'G)';
+    document.getElementById('gpu-val').textContent = m.gpu + '%';
+    document.getElementById('vram-val').textContent = m.vram + '/6144MB';
+    document.getElementById('npu-val').textContent = m.npu + '%';
+  }
+
+  slider.addEventListener('input', e => setLevel(+e.target.value));
+  setLevel(3);
+
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  async function loadModels() {
+    const models = await window.OllamaAPI.getModels();
+    if (models && models.length) {
+      modelSel.innerHTML = models.map(m => '<option value="'+m.name+'">'+m.name+'</option>').join('');
+      connDot.style.background = '#00ff88';
+      aiStatus.textContent = '\uC900\uBE44 \uC644\uB8CC';
+      addLog('ai', '\u2705 \uC0AC\uC6A9 \uAC00\uB2A5\uD55C \uBAA8\uB378 '+models.length+'\uAC1C \uAC10\uC9C0 \uC644\uB8CC.');
+    } else {
+      errToast.style.display = 'block';
+      connDot.style.background = '#ff0044';
+    }
+  }
+
+  document.getElementById('refresh-btn').addEventListener('click', loadModels);
+  document.getElementById('close-toast').addEventListener('click', () => errToast.style.display = 'none');
+  document.getElementById('fix-btn').addEventListener('click', () => {
+    navigator.clipboard.writeText('setx OLLAMA_ORIGINS "*"');
+    alert('\uBCF5\uC0AC \uC644\uB8CC! \uD130\uBBF8\uB110\uC5D0 \uBD99\uC5EC\uB123\uACE0 Ollama\uB97C \uC7AC\uC2DC\uC791\uD558\uC138\uC694.');
+  });
+
+  function addLog(type, text) {
+    const now = new Date().toLocaleTimeString();
+    const d = document.createElement('div');
+    d.className = 'log-entry' + (type === 'ai' ? ' ai' : '');
+    d.innerHTML = '<span class="ts">['+now+']</span>'+text;
+    chatLog.appendChild(d);
+    document.getElementById('ai-output').scrollTop = 9999;
+    return d;
+  }
+
+  async function runReview(prompt) {
+    const target = document.getElementById('original-text').innerText.trim();
+    if (!target && !prompt) { alert('\uB9AC\uBDF0\uD560 \uB0B4\uC6A9\uC744 \uC785\uB825\uD574 \uC8FC\uC138\uC694.'); return; }
+    if (!modelSel.value) { alert('Ollama \uBAA8\uB378\uC744 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.'); return; }
+    const question = prompt || '\uB2E4\uC74C \uB0B4\uC6A9\uC744 \uAC80\uD1A0\uD558\uACE0 \uAC1C\uC120\uC810\uACFC \uD53C\uB4DC\uBC31\uC744 \uC81C\uACF5\uD574 \uC8FC\uC138\uC694:\n\n'+target;
+    addLog('', '\uD83D\uDC64 '+(prompt || 'AI \uB9AC\uBDF0 \uC694\uCCAD'));
+    const aiEntry = addLog('ai', '');
+    aiStatus.textContent = 'AI \uBD84\uC11D \uC911...';
+    let full = '';
+    try {
+      await window.OllamaAPI.chat(modelSel.value, [{role:'user',content:question}], {}, chunk => {
+        full += chunk;
+        aiEntry.innerHTML = '<span class="ts">[AI]</span>'+full;
+        document.getElementById('ai-output').scrollTop = 9999;
+      });
+      aiStatus.textContent = '\uC644\uB8CC';
+    } catch(e) {
+      aiEntry.innerHTML = '<span class="ts">[\uC624\uB958]</span>Ollama \uC5F0\uACB0 \uC624\uB958\uC785\uB2C8\uB2E4.';
+      aiStatus.textContent = '\uC624\uB958';
+    }
+  }
+
+  document.getElementById('start-btn').addEventListener('click', () => runReview(null));
+  reviewBtn.addEventListener('click', () => runReview(null));
+  sendBtn.addEventListener('click', () => { const txt = userInput.value.trim(); if(!txt) return; userInput.value=''; runReview(txt); });
+  userInput.addEventListener('keydown', e => e.key === 'Enter' && sendBtn.click());
+  document.getElementById('clear-btn').addEventListener('click', () => {
+    document.getElementById('original-text').innerText = '';
+    chatLog.innerHTML = '<div class="log-entry ai"><span class="ts">[\uC2DC\uC2A4\uD15C]</span>\uCD08\uAE30\uD654 \uC644\uB8CC.</div>';
+    aiStatus.textContent = '\uB300\uAE30 \uC911';
+  });
+  document.getElementById('copy-btn').addEventListener('click', () => { navigator.clipboard.writeText(chatLog.innerText); alert('\uBCF5\uC0AC \uC644\uB8CC'); });
+  document.getElementById('export-btn').addEventListener('click', () => {
+    const blob = new Blob([chatLog.innerText], {type:'text/plain'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'design_review_result.txt'; a.click();
+  });
+
+  loadModels();
+});
+</script>
 </body>
 </html>
